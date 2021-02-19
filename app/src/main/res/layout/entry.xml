@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_centerInParent="true"
+    android:background="@drawable/background1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/violet">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/peach"/>
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minHeight="?actionBarSize"
+                android:padding="10dp"
+                android:textColor="@color/LawnGreen"
+                android:text="ADD/EDIT PARTY"
+                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/peach"/>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Lime"
+            android:textSize="20dp"
+            android:text="ADD PARTY"/>
+        <View
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="3dp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:textColor="@color/white"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:id="@+id/partyname"
+            android:gravity="center_horizontal" />
+        <View
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="3dp" />
+        <Button
+            android:layout_gravity="center"
+            android:id="@+id/submit1"
+            android:text="Submit"
+            android:textColor="@color/black"
+            android:background="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <View
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="3dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Lime"
+            android:textSize="20dp"
+            android:text="EDIT/DELETE PARTY"/>
+        <View
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="3dp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:hint="search"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:id="@+id/search"
+            android:textColor="@color/yellow_orange"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" />
+        <View
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="3dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorPrimaryDark"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="50"
+            android:id="@+id/listnames" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorPrimaryDark"/>
+    </LinearLayout>
+</LinearLayout>

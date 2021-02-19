@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/violet"
+        tools:ignore="MissingConstraints">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/peach"/>
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minHeight="?actionBarSize"
+                android:padding="10dp"
+                android:textColor="@color/LawnGreen"
+                android:text="ADD ENTRY"
+                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/peach"/>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|bottom"
+        android:weightSum="100"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/party"
+            android:textColor="@color/yellow_orange"
+            android:hint="SELECT PARTY NAME"
+            android:textColorHint="@color/yellow_orange"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
+
+        <View
+            android:layout_weight="15"
+            android:layout_width="match_parent"
+            android:layout_height="3dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/amt"
+            android:inputType="number"
+            android:textColor="@color/yellow_orange"
+            android:textColorHint="@color/yellow_orange"
+            android:hint="AMOUNT"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
+
+        <View
+            android:layout_weight="20"
+            android:layout_width="match_parent"
+            android:layout_height="3dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/submit"
+            android:textColor="@color/black"
+            android:background="@color/colorAccent"
+            android:text="SUBMIT"
+            android:textSize="20dp"/>
+
+        <View
+            android:layout_weight="20"
+            android:layout_width="match_parent"
+            android:layout_height="3dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:hint="SEARCH PARTY NAME"
+            android:textColorHint="@color/yellow_orange"
+            android:textColor="@color/yellow_orange"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:id="@+id/search"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorPrimaryDark"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:id="@+id/listnames" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorPrimaryDark"/>
+        <View
+            android:layout_weight="15"
+            android:layout_width="match_parent"
+            android:layout_height="3dp" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
