@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class AddNewEntry extends AppCompatActivity {
 
@@ -54,7 +55,7 @@ public class AddNewEntry extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name=text.getText().toString().trim();
+                String name=text.getText().toString().trim().toLowerCase();
                 ArrayList<String> removeduplicate = new ArrayList<>();
                 Cursor data = mdatabasehelperparty.getData();
                 while(data.moveToNext()){
@@ -93,6 +94,7 @@ public class AddNewEntry extends AppCompatActivity {
                         }
                     }
                 }
+                Collections.sort(filteredname);
                 myAdapter = new MyAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,filteredname);
                 mListView.setAdapter(myAdapter);
             }
@@ -106,6 +108,7 @@ public class AddNewEntry extends AppCompatActivity {
             //String name = data.getString(1);//0 is column name
             last.add(data.getString(1));
         }
+        Collections.sort(last);
         myAdapter = new MyAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,last);
         mListView.setAdapter(myAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -139,16 +142,34 @@ public class AddNewEntry extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             String updated = namepopup.getText().toString().trim();
+
+
+                            ArrayList<String> removeduplicate = new ArrayList<>();
+                            Cursor data = mdatabasehelperparty.getData();
+                            while(data.moveToNext()){
+                                String dupname=data.getString(1);
+                                if (!dupname.equalsIgnoreCase(name)) {
+                                    removeduplicate.add(dupname);
+                                }
+                            }
+
+
                             if(updated.equalsIgnoreCase(""))
                             {
                                 Toast.makeText(getApplicationContext(), "Please enter a valid name!!", Toast.LENGTH_SHORT).show();
                             }
                             else
                             {
-                                mdatabasehelperparty.updateName(updated, finalItemId,name);
-                                Toast.makeText(getApplicationContext(),"Updated Successfully!!",Toast.LENGTH_SHORT).show();
-                                Intent i =new Intent(AddNewEntry.this,AddNewEntry.class);
-                                startActivity(i);
+                                if(removeduplicate.contains(updated))
+                                {
+                                    Toast.makeText(getApplicationContext(), "Name Already Exists!!", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    mdatabasehelperparty.updateName(updated, finalItemId,name);
+                                    Toast.makeText(getApplicationContext(),"Updated Successfully!!",Toast.LENGTH_SHORT).show();
+                                    Intent i =new Intent(AddNewEntry.this,AddNewEntry.class);
+                                    startActivity(i);
+                                }
                             }
                         }
                     });

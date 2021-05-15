@@ -37,6 +37,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 public class Main2Activity extends AppCompatActivity {
@@ -113,6 +114,7 @@ public class Main2Activity extends AppCompatActivity {
                         }
                     }
                 }
+                Collections.sort(filteredname);
                 myAdapter = new MyAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,filteredname);
                 listView.setAdapter(myAdapter);
             }
@@ -140,6 +142,7 @@ public class Main2Activity extends AppCompatActivity {
             //String name = data.getString(1);//0 is column name
             last.add(data.getString(1));
         }
+        Collections.sort(last);
         myAdapter = new MyAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,last);
         listView.setAdapter(myAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

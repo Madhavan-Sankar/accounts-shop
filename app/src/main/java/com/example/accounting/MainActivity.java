@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         party=findViewById(R.id.party);
         backup=findViewById(R.id.backup);
         restore=findViewById(R.id.restore);
-        restore.setVisibility(View.GONE);         //This is for hiding the restore button for preventing Data Redundancy
+        //restore.setVisibility(View.GONE);        //This is for hiding the restore button for preventing Data Redundancy
         //backup.setVisibility(View.GONE)
         mdatabasehelper=new databasehelper(this);
         mdatabasehelperparty = new databasehelperparty(this);
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        //edit party
+        //add / edit party
         party.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -107,7 +107,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/party"
             android:backgroundTint="@color/Yellow"
-            android:text="Edit Party" />
+            android:text="Add / Edit Party" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -29,6 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ListPartyWise extends AppCompatActivity {
 
@@ -68,6 +69,7 @@ public class ListPartyWise extends AppCompatActivity {
                         }
                     }
                 }
+                Collections.sort(filteredname);
                 myAdapter = new MyAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,filteredname){
                 };
                 mListView.setAdapter(myAdapter);
@@ -98,6 +100,7 @@ public class ListPartyWise extends AppCompatActivity {
             String name=data.getString(1);//1 is column name
             last.add(name);
         }
+        Collections.sort(last);
         myAdapter = new MyAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,last);
         mListView.setAdapter(myAdapter);
     }
