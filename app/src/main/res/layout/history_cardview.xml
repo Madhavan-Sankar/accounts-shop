@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/cardview"
+    android:gravity="center"
+    xmlns:tools="http://schemas.android.com/tools">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/dateandname"
+            android:text="dateandname"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="#BDC667"
+            android:layout_weight="50"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/added"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text=""
+            android:gravity="center"
+            android:textColor="#BDC667"
+            android:layout_weight="25"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/deleted"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text=""
+            android:gravity="center"
+            android:layout_weight="25"
+            android:textStyle="bold"
+            android:textColor="#BDC667"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="3dp" />
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.accounting;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,8 +16,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.SharedMemory;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +27,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -46,14 +51,12 @@ public class Main2Activity extends AppCompatActivity {
     MyAdapter myAdapter;
     ArrayList<String> last = new ArrayList<>();
     EditText search;
-    TextView ename;
-    EditText eamt;
-    Button button;
-    String name;
+    TextView title;
     Long amt;
     String date,time;
     databasehelper mdatabasehelper;
     databasehelperparty mdatabasehelperparty;
+    databasehelperhistory mdatabasehelperhistory;
     public void dateandtime()
     {
         Date full = Calendar.getInstance().getTime();
@@ -67,31 +70,17 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        ename=findViewById(R.id.party);
-        eamt=findViewById(R.id.amt);
+        title=findViewById(R.id.title);
+        String mystring=new String("ADD ENTRY");
+        SpannableString content = new SpannableString(mystring);
+        content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
+        title.setText(content);
         listView=findViewById(R.id.listnames);
         search=findViewById(R.id.search);
-        button=findViewById(R.id.submit);
         mdatabasehelper=new databasehelper(this);
         mdatabasehelperparty=new databasehelperparty(this);
+        mdatabasehelperhistory = new databasehelperhistory(this);
         populateListView();
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dateandtime();
-                name=ename.getText().toString().trim();
-                if(TextUtils.isEmpty(eamt.getText().toString()))
-                {
-                    Toast.makeText(getApplicationContext(),"Please enter the amount!!",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    amt = Long.parseLong(String.valueOf(eamt.getText()));
-                    addData(date, name, amt);
-                    Intent i = new Intent(Main2Activity.this, MainActivity.class);
-                    startActivity(i);
-                }
-            }
-        });
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -108,7 +97,7 @@ public class Main2Activity extends AppCompatActivity {
                 String searchArray = s.toString();
                 ArrayList<String> filteredname = new ArrayList<>();
                 for(String i : last){
-                    if (i.toLowerCase().contains(searchArray.toLowerCase())) {
+                    if (i.toUpperCase().contains(searchArray.toUpperCase())) {
                         if(!filteredname.contains(i)){
                             filteredname.add(i);
                         }
@@ -134,6 +123,11 @@ public class Main2Activity extends AppCompatActivity {
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
+        boolean res1 = mdatabasehelperhistory.addData(date+"#"+name+"#ADDED",amt);
+        if(res1)
+            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
     }
 
     private void populateListView() {
@@ -148,8 +142,38 @@ public class Main2Activity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String name = adapterView.getItemAtPosition(i).toString();
-                ename.setText(name);
+                final String name = adapterView.getItemAtPosition(i).toString();
+                AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(Main2Activity.this);
+                LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+                View v = inflater.inflate(R.layout.addamt, null);  // this line
+                alertDialog2.setView(v);
+                AlertDialog alertDialog = alertDialog2.create();
+                alertDialog.show();
+                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+                layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                final TextView pname = v.findViewById(R.id.pname);
+                pname.setText(name);
+                Button submit = v.findViewById(R.id.submit);
+                final EditText amount = v.findViewById(R.id.amt);
+                submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dateandtime();
+                        if(TextUtils.isEmpty(amount.getText().toString()))
+                        {
+                            Toast.makeText(getApplicationContext(),"Please enter the amount!!",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            amt = Long.parseLong(String.valueOf(amount.getText()));
+                            addData(date, name, amt);
+                            Intent i = new Intent(Main2Activity.this, Main2Activity.class);
+                            startActivity(i);
+                        }
+                    }
+                });
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }

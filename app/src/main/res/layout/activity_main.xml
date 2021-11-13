@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/gradient5"
+    android:background="@color/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="100"
+    android:gravity="center_horizontal"
     android:id="@+id/pleasechange"
     android:orientation="vertical"
     tools:context=".MainActivity">
@@ -19,43 +20,38 @@
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
-            android:textColor="@color/Bisque"
+            android:textColor="#00A5CF"
             android:layout_height="wrap_content"
             android:minHeight="?actionBarSize"
             android:textAlignment="center"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="15dp"
             android:layout_weight="100"
+            android:textSize="25dp"
             android:text="ALL IS WELL"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
     </LinearLayout>
-    <View
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/LimeGreen"
-        android:layout_marginTop="3dp" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_weight="20"
-        android:layout_marginTop="3dp" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
     <Button
         android:id="@+id/backup"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
-        android:backgroundTint="@color/BurlyWood"
+        android:backgroundTint="#0CCE6B"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:text="Backup Data"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_weight="20"
-        android:layout_marginTop="3dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="start"
+        android:layout_marginBottom="20dp"
         android:weightSum="100">
 
         <TextView
@@ -65,7 +61,7 @@
             android:textSize="30dp"
             android:layout_weight="40"
             android:textStyle="italic|bold"
-            android:textColor="#fcfcfc"
+            android:textColor="#CB48B7"
             android:text="Total Credit :"
             android:gravity="center_horizontal" />
 
@@ -76,68 +72,34 @@
             android:textSize="30dp"
             android:layout_weight="60"
             android:textStyle="italic|bold"
-            android:textColor="#fcfcfc"
+            android:textColor="#CB48B7"
             android:text="0"
             android:gravity="center" />
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_weight="10"
-        android:layout_marginTop="3dp" />
-    <Button
-        android:layout_width="wrap_content"
+
+    <com.hitomi.cmlibrary.CircleMenu
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginBottom="25dp"
+        android:id="@+id/circle"/>
+
+    <TextView
         android:id="@+id/display"
-        android:layout_gravity="center"
-        android:text="DISPLAY FULL LIST"
-        android:backgroundTint="@color/teal"
-        android:layout_height="wrap_content"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_weight="10"
-        android:layout_marginTop="3dp" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/party"
-            android:backgroundTint="@color/Yellow"
-            android:text="Add / Edit Party" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/entry"
-            android:layout_marginLeft="50dp"
-            android:backgroundTint="@color/Yellow"
-            android:text="Create Entry" />
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_weight="10"
-        android:layout_marginTop="3dp" />
-    <Button
         android:layout_width="wrap_content"
-        android:id="@+id/displaypartywise"
-        android:layout_gravity="center"
-        android:text="DISPLAY PARTY WISE LIST"
-        android:backgroundTint="@color/teal"
-        android:layout_height="wrap_content"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_weight="10"
-        android:layout_marginTop="3dp" />
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:textColor="#B3FF38"
+        android:layout_marginBottom="15dp"
+        android:gravity="center_horizontal" />
+
     <Button
         android:id="@+id/restore"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
-        android:backgroundTint="@color/BurlyWood"
+        android:backgroundTint="#0CCE6B"
         android:layout_height="wrap_content"
         android:text="Restore Data"/>
+
+    </LinearLayout>
 </LinearLayout>

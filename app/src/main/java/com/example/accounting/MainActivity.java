@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -14,6 +15,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 
@@ -24,6 +28,9 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.hitomi.cmlibrary.CircleMenu;
+import com.hitomi.cmlibrary.OnMenuSelectedListener;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -40,71 +47,110 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button displaylist,entry,party,backup,restore,partywisedisplay;
-    TextView amount;
+    Button backup,restore;
+    TextView amount,display,title;
     String date,time;
     private static final int wesc=1;
     String partyname="partylist.csv";
     String transactions="transactions.csv";
     databasehelper mdatabasehelper;
     databasehelperparty mdatabasehelperparty;
+    CircleMenu circleMenu;
     int total;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dateandtime();
+        title=findViewById(R.id.title);
         amount=findViewById(R.id.finalamt);
-        displaylist=findViewById(R.id.display);
-        partywisedisplay=findViewById(R.id.displaypartywise);
-        entry=findViewById(R.id.entry);
-        party=findViewById(R.id.party);
         backup=findViewById(R.id.backup);
         restore=findViewById(R.id.restore);
+        display=findViewById(R.id.display);
         //restore.setVisibility(View.GONE);        //This is for hiding the restore button for preventing Data Redundancy
         //backup.setVisibility(View.GONE)
+        title=findViewById(R.id.title);
+        String mystring=new String("ALL IS WELL");
+        SpannableString content = new SpannableString(mystring);
+        content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
+        title.setText(content);
         mdatabasehelper=new databasehelper(this);
         mdatabasehelperparty = new databasehelperparty(this);
+        circleMenu=findViewById(R.id.circle);
+        circleMenu.setMainMenu(Color.parseColor("#D45113"),R.drawable.ic_baseline_menu_24,R.drawable.ic_baseline_cancel_24)
+                .addSubMenu(Color.parseColor("#3083DC"),R.drawable.ic_baseline_account_circle_24)//add / edit party
+                .addSubMenu(Color.parseColor("#C73E1D"),R.drawable.dr)//display full list
+                .addSubMenu(Color.parseColor("#3083DC"),R.drawable.ic_baseline_history_24)//Transaction History
+                .addSubMenu(Color.parseColor("#3083DC"),R.drawable.ic_baseline_add_24)//create entry
+                .addSubMenu(Color.parseColor("#C73E1D"),R.drawable.pr)//display party wise list
+                .setOnMenuSelectedListener(new OnMenuSelectedListener() {
+                    @Override
+                    public void onMenuSelected(int index) {
+                        switch (index)
+                        {
+                            case 0:
+                                display.setText("Add/Edit Party");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent i = new Intent(MainActivity.this,AddNewEntry.class);
+                                        startActivity(i);
+                                    }
+                                }, 1100);
+                                break;
+                            case 1:
+                                display.setText("Display Full List");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("sourceoforigin","mainactivity");
+                                        Intent ii=new Intent(MainActivity.this,ListParty.class);
+                                        ii.putExtras(bundle);
+                                        startActivity(ii);
+                                    }
+                                }, 1100);
+                                break;
+                            case 2:
+                                display.setText("Transaction History");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent I=new Intent(MainActivity.this,history.class);
+                                        startActivity(I);
+                                    }
+                                }, 1100);
+                                break;
+                            case 3:
+                                display.setText("Create new Entry");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent intent = new Intent(MainActivity.this,Main2Activity.class);
+                                        startActivity(intent);
+                                    }
+                                }, 1100);
+                                break;
+                            case 4:
+                                display.setText("Display Partywise list");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent i1=new Intent(MainActivity.this,ListPartyWise.class);
+                                        startActivity(i1);
+                                    }
+                                }, 1100);
+                                break;
+                        }
+                    }
+                });
         total = populateListView();
         amount.setText(String.valueOf(total));
-        //display full list
-        displaylist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("sourceoforigin","mainactivity");
-                Intent i=new Intent(MainActivity.this,ListParty.class);
-                i.putExtras(bundle);
-                startActivity(i);
-            }
-        });
-        //display party wise list
-        partywisedisplay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i=new Intent(MainActivity.this,ListPartyWise.class);
-                startActivity(i);
-            }
-        });
-        //add / edit party
-        party.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this,AddNewEntry.class);
-                startActivity(i);
-            }
-        });
-        //create entry
-        entry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this,Main2Activity.class);
-                startActivity(i);
-            }
-        });
         //backup data
         backup.setOnClickListener(new View.OnClickListener() {
             @Override

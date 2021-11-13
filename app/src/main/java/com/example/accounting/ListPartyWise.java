@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +30,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -35,7 +39,9 @@ public class ListPartyWise extends AppCompatActivity {
 
     private static final String TAG = "DatabaseHelper";
     databasehelperparty mdatabasehelper;
+    databasehelper db;
     EditText search;
+    TextView title;
     private ListView mListView;
     ArrayList<String> last = new ArrayList<>();
     MyAdapter myAdapter;
@@ -43,9 +49,15 @@ public class ListPartyWise extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listpartywise);
+        title=findViewById(R.id.title);
+        String mystring=new String("RECORD PARTYWISE");
+        SpannableString content = new SpannableString(mystring);
+        content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
+        title.setText(content);
         search=findViewById(R.id.search);
         mListView = findViewById(R.id.listview);
         mdatabasehelper = new databasehelperparty(this);
+        db = new databasehelper(this);
         populateListView();
         search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -63,7 +75,7 @@ public class ListPartyWise extends AppCompatActivity {
                 String searchArray = s.toString();
                 ArrayList<String> filteredname = new ArrayList<>();
                 for(String i : last){
-                    if (i.toLowerCase().contains(searchArray.toLowerCase())) {
+                    if (i.toUpperCase().contains(searchArray.toUpperCase())) {
                         if(!filteredname.contains(i)){
                             filteredname.add(i);
                         }
@@ -123,6 +135,12 @@ public class ListPartyWise extends AppCompatActivity {
             View row = layoutInflater.inflate(R.layout.cardviewpartywise, parent, false);
             TextView name = row.findViewById(R.id.name);
             name.setText(rlast.get(position));
+            TextView amount = row.findViewById(R.id.amount);
+            Cursor data = db.getAmount(rlast.get(position));
+            while(data.moveToNext()){
+                if(data.getString(0)!=null)
+                    amount.setText(data.getString(0));
+            }
             return row;
         }
     }

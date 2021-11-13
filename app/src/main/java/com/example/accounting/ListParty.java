@@ -1,13 +1,14 @@
 package com.example.accounting;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,26 +18,29 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 
 public class ListParty extends AppCompatActivity {
 
     private static final String TAG = "DatabaseHelper";
     databasehelper mdatabasehelper;
+    databasehelperhistory mdatabasehelperhistory;
     EditText search;
     TextView total;
     String sourceoforigin;
+    TextView title;
     private ListView mListView;
     ArrayList<String> last = new ArrayList<>();
     MyAdapter myAdapter;
@@ -44,12 +48,18 @@ public class ListParty extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listparty);
+        title=findViewById(R.id.title);
+        String mystring=new String("RECORDS");
+        SpannableString content = new SpannableString(mystring);
+        content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
+        title.setText(content);
         Bundle bundle = getIntent().getExtras();
         sourceoforigin = bundle.getString("sourceoforigin");
         search=findViewById(R.id.search);
         total = findViewById(R.id.total);
-        mListView = (ListView) findViewById(R.id.listview);
+        mListView =  findViewById(R.id.listview);
         mdatabasehelper = new databasehelper(this);
+        mdatabasehelperhistory = new databasehelperhistory(this);
         populateListView();
         search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -67,8 +77,8 @@ public class ListParty extends AppCompatActivity {
                 String searchArray = s.toString();
                 ArrayList<String> filteredname = new ArrayList<>();
                 for(String i : last){
-                    if(sourceoforigin.equalsIgnoreCase("mainactivity") || i.toLowerCase().contains(sourceoforigin.toLowerCase())) {
-                        if (i.toLowerCase().contains(searchArray.toLowerCase())) {
+                    if(sourceoforigin.equalsIgnoreCase("mainactivity") || i.toUpperCase().contains(sourceoforigin.toUpperCase())) {
+                        if (i.toUpperCase().contains(searchArray.toUpperCase())) {
                             if (!filteredname.contains(i)) {
                                 filteredname.add(i);
                             }
@@ -104,7 +114,7 @@ public class ListParty extends AppCompatActivity {
     private void populateListView() {
         int totalsum=0;
         Log.d(TAG, "populateListView: Displaying data in the ListView.");
-        Cursor data = mdatabasehelper.getData();
+        final Cursor data = mdatabasehelper.getData();
         while(data.moveToNext()){
             String name = data.getString(2);//1 is column name
             if(sourceoforigin.equalsIgnoreCase("mainactivity") || name.equalsIgnoreCase(sourceoforigin)) {
@@ -121,8 +131,75 @@ public class ListParty extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String name = adapterView.getItemAtPosition(i).toString();
-                Toast.makeText(getApplicationContext(),"Hii"+name,Toast.LENGTH_SHORT).show();
+                final String ret=adapterView.getItemAtPosition(i).toString();
+
+                final String[] s = ret.split(",/");
+                final Integer id=Integer.parseInt(s[0]);
+                final String fname=s[2];
+
+                android.app.AlertDialog.Builder alertDialog2 = new android.app.AlertDialog.Builder(ListParty.this);
+                LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+                View v = inflater.inflate(R.layout.editamount, null);  // this line
+                alertDialog2.setView(v);
+                AlertDialog alertDialog = alertDialog2.create();
+                alertDialog.show();
+                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+                layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+                final TextView name = v.findViewById(R.id.pname);
+                name.setText(fname);
+                final EditText amt = v.findViewById(R.id.amt);
+                amt.setText(s[3]);
+                Button update = v.findViewById(R.id.update);
+                Button delete = v.findViewById(R.id.delete);
+                update.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String amount = amt.getText().toString();
+                        if(amt.equals(""))
+                        {
+                            Toast.makeText(getApplicationContext(), "Please Enter a valid amount!", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            mdatabasehelper.updateAmount(amount,id);
+                            Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat mdformat = new SimpleDateFormat("dd/MM/yyyy");
+                            String date = mdformat.format(calendar.getTime());
+                            boolean res1 = mdatabasehelperhistory.addData(date+"#"+name.getText().toString()+"#UPDATED",Long.parseLong(amount));
+                            if(res1)
+                                Toast.makeText(getApplicationContext(),"Updated "+name.getText()+" Successfully!!",Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getApplicationContext(), "Error!", Toast.LENGTH_SHORT).show();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("sourceoforigin",sourceoforigin);
+                            Intent i=new Intent(ListParty.this,ListParty.class);
+                            i.putExtras(bundle);
+                            startActivity(i);
+                        }
+                    }
+                });
+                delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mdatabasehelper.deleteName(id,name.getText().toString());
+                        Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat mdformat = new SimpleDateFormat("dd/MM/yyyy");
+                        String date = mdformat.format(calendar.getTime());
+                        boolean res1 = mdatabasehelperhistory.addData(date+"#"+name.getText().toString()+"#DELETED",Long.parseLong(s[3]));
+                        if(res1)
+                            Toast.makeText(getApplicationContext(),"Deleted "+name.getText()+" Successfully!!",Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getApplicationContext(), "Error!", Toast.LENGTH_SHORT).show();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("sourceoforigin",sourceoforigin);
+                        Intent i=new Intent(ListParty.this,ListParty.class);
+                        i.putExtras(bundle);
+                        startActivity(i);
+                    }
+                });
             }
         });
     }
@@ -143,46 +220,15 @@ public class ListParty extends AppCompatActivity {
         public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.cardview, parent, false);
-            ImageButton delete= row.findViewById(R.id.delete);
             TextView date = row.findViewById(R.id.date);
-            TextView name = row.findViewById(R.id.name);
+            final TextView name = row.findViewById(R.id.name);
             final TextView amount = row.findViewById(R.id.amount);
 
             // now set our resources on views
             String[] res=rlast.get(position).split(",/");
-            final int delid = Integer.parseInt(res[0]);
-            final String delname;
             date.setText(res[1]);
-            delname = res[2];
             name.setText(res[2]);
             amount.setText(res[3]);
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                        AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(ListParty.this);
-                        alertDialog2.setTitle("Confirm Delete...");
-                        alertDialog2.setMessage("Delete "+delname+" with amount Rs. "+ amount.getText() +"?..");
-                        alertDialog2.setPositiveButton("YES",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getApplicationContext(),"Deleted "+delname+" Successfully!!",Toast.LENGTH_SHORT).show();
-                                        mdatabasehelper.deleteName(delid,delname);
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("sourceoforigin",sourceoforigin);
-                                        Intent i=new Intent(ListParty.this,ListParty.class);
-                                        i.putExtras(bundle);
-                                        startActivity(i);
-                                    }
-                        });
-                        alertDialog2.setNegativeButton("NO",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getApplicationContext(), "You clicked on NO", Toast.LENGTH_SHORT).show();
-                        dialog.cancel();
-                    }});
-                    alertDialog2.show();
-                }
-            });
             return row;
         }
     }

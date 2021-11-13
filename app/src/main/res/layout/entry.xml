@@ -3,22 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_centerInParent="true"
-    android:background="@drawable/background1"
+    android:background="@color/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/violet">
+        android:background="#05CB48B7">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/peach"/>
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
@@ -32,7 +28,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@color/peach"/>
+                android:background="#CB48B7"/>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout
@@ -44,7 +40,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Lime"
+            android:textColor="#00A5CF"
             android:textSize="20dp"
             android:text="ADD PARTY"/>
         <View
@@ -55,7 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Name"
-            android:textColor="@color/white"
+            android:textColor="#CB48B7"
+            android:textColorHint="#CB48B7"
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:id="@+id/partyname"
@@ -69,7 +66,7 @@
             android:id="@+id/submit1"
             android:text="Submit"
             android:textColor="@color/black"
-            android:background="@color/colorAccent"
+            android:background="#0CCE6B"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <View
@@ -79,7 +76,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Lime"
+            android:textColor="#00A5CF"
             android:textSize="20dp"
             android:text="EDIT/DELETE PARTY"/>
         <View
@@ -92,7 +89,8 @@
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:id="@+id/search"
-            android:textColor="@color/yellow_orange"
+            android:textColor="#CB48B7"
+            android:textColorHint="#CB48B7"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" />
         <View

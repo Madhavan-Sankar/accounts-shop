@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 public class AddNewEntry extends AppCompatActivity {
 
@@ -40,22 +43,30 @@ public class AddNewEntry extends AppCompatActivity {
     ListView mListView;
     ArrayList<String> last = new ArrayList<>();
     databasehelperparty mdatabasehelperparty;
+    databasehelper mdatabasehelper;
     MyAdapter myAdapter;
+    TextView title;
     private static final String TAG = "DatabaseHelperParty";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.entry);
+        title=findViewById(R.id.title);
+        String mystring=new String("ADD/EDIT PARTY");
+        SpannableString content = new SpannableString(mystring);
+        content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
+        title.setText(content);
         b = findViewById(R.id.submit1);
         text = findViewById(R.id.partyname);
         search=findViewById(R.id.search);
         mListView=findViewById(R.id.listnames);
         mdatabasehelperparty = new databasehelperparty(this);
+        mdatabasehelper = new databasehelper(this);
         populateListView();
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name=text.getText().toString().trim().toLowerCase();
+                String name=text.getText().toString().trim().toUpperCase();
                 ArrayList<String> removeduplicate = new ArrayList<>();
                 Cursor data = mdatabasehelperparty.getData();
                 while(data.moveToNext()){
@@ -67,7 +78,7 @@ public class AddNewEntry extends AppCompatActivity {
                 }
                 else {
                     addData(name);
-                    Intent i = new Intent(AddNewEntry.this, MainActivity.class);
+                    Intent i = new Intent(AddNewEntry.this, AddNewEntry.class);
                     startActivity(i);
                 }
             }
@@ -88,7 +99,7 @@ public class AddNewEntry extends AppCompatActivity {
                 String searchArray = s.toString();
                 ArrayList<String> filteredname = new ArrayList<>();
                 for(String i : last){
-                    if (i.toLowerCase().contains(searchArray.toLowerCase())) {
+                    if (i.toUpperCase().contains(searchArray.toUpperCase())) {
                         if(!filteredname.contains(i)){
                             filteredname.add(i);
                         }
@@ -136,14 +147,14 @@ public class AddNewEntry extends AppCompatActivity {
                     final EditText namepopup = v.findViewById(R.id.name);
                     Button edit = v.findViewById(R.id.edit);
                     Button delete = v.findViewById(R.id.delete);
+                    TextView pid = v.findViewById(R.id.pid);
                     namepopup.setText(name);
+                    pid.setText("PARTY ID : "+String.valueOf(ItemId));
                     final int finalItemId = ItemId;
                     edit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            String updated = namepopup.getText().toString().trim();
-
-
+                            String updated = namepopup.getText().toString().trim().toUpperCase();
                             ArrayList<String> removeduplicate = new ArrayList<>();
                             Cursor data = mdatabasehelperparty.getData();
                             while(data.moveToNext()){
@@ -152,8 +163,6 @@ public class AddNewEntry extends AppCompatActivity {
                                     removeduplicate.add(dupname);
                                 }
                             }
-
-
                             if(updated.equalsIgnoreCase(""))
                             {
                                 Toast.makeText(getApplicationContext(), "Please enter a valid name!!", Toast.LENGTH_SHORT).show();
@@ -165,6 +174,7 @@ public class AddNewEntry extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Name Already Exists!!", Toast.LENGTH_SHORT).show();
                                 }
                                 else {
+                                    mdatabasehelper.updateName(updated,name);
                                     mdatabasehelperparty.updateName(updated, finalItemId,name);
                                     Toast.makeText(getApplicationContext(),"Updated Successfully!!",Toast.LENGTH_SHORT).show();
                                     Intent i =new Intent(AddNewEntry.this,AddNewEntry.class);
@@ -224,8 +234,14 @@ public class AddNewEntry extends AppCompatActivity {
     void addData(String name)
     {
         boolean res=mdatabasehelperparty.addData(name);
-        if(res)
-            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+        Cursor data = mdatabasehelperparty.getItemID(name);
+        int ItemId=-1;
+        while(data.moveToNext())
+        {
+            ItemId=data.getInt(0);
+        }
+        if(res && ItemId>0)
+            Toast.makeText(this, name+" created successfuly with id "+ String.valueOf(ItemId) +" !!", Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
     }

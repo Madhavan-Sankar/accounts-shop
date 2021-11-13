@@ -11,19 +11,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="10dp"
+        android:weightSum="100"
         android:orientation="horizontal">
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:text="Name"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:textColor="@color/maroon"
-        android:layout_weight="10"/>
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAlignment="textStart"
+            android:layout_marginLeft="20dp"
+            android:text="Name"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="#BDC667"
+            android:layout_weight="25"/>
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="22dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#FAB3A9"
+            android:layout_weight="75"/>
     </LinearLayout>
     <View
         android:layout_width="match_parent"

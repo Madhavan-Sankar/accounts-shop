@@ -67,13 +67,22 @@ public class databasehelper extends SQLiteOpenHelper{
         return data;
     }
 
-    public void updateName(String newName, int id, String oldName){
+
+    public void updateName(String newName, String oldName){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_NAME + " SET " + COL2 +
-                " = '" + newName + "' WHERE " + COL1 + " = '" + id + "'" +
-                " AND " + COL2 + " = '" + oldName + "'";
+                " = '" + newName + "' WHERE " + COL2 + " = '" + oldName + "'";
         Log.d(TAG, "updateName: query: " + query);
         Log.d(TAG, "updateName: Setting name to " + newName);
+        db.execSQL(query);
+    }
+
+    public void updateAmount(String newAmt, int iid){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME + " SET " + COL3 +
+                " = '" + newAmt + "' WHERE  id =  '" + iid + "'";
+        Log.d(TAG, "updateName: query: " + query);
+        Log.d(TAG, "updateName: Setting amount to " + newAmt);
         db.execSQL(query);
     }
 
@@ -87,6 +96,13 @@ public class databasehelper extends SQLiteOpenHelper{
         db.execSQL(query);
     }
 
+    public Cursor getAmount(String pname)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT SUM(" + COL3 + ") FROM " + TABLE_NAME + " WHERE NAME = '" + pname + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
 }
 
 
